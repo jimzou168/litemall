@@ -3,34 +3,34 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入管理员名称"/>
-      <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" :placeholder="$t('sys_admin.placeholder.filter_username')" />
+      <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('app.button.search') }}</el-button>
+      <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('app.button.create') }}</el-button>
+      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('app.button.download') }}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="管理员ID" prop="id" sortable/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('app.message.list_loading')" border fit highlight-current-row>
+      <el-table-column align="center" :label="$t('sys_admin.table.id')" prop="id" sortable />
 
-      <el-table-column align="center" label="管理员名称" prop="username"/>
+      <el-table-column align="center" :label="$t('sys_admin.table.username')" prop="username" />
 
-      <el-table-column align="center" label="管理员头像" prop="avatar">
+      <el-table-column align="center" :label="$t('sys_admin.table.avatar')" prop="avatar">
         <template slot-scope="scope">
           <img v-if="scope.row.avatar" :src="scope.row.avatar" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="管理员角色" prop="roleIds">
+      <el-table-column align="center" :label="$t('sys_admin.table.role_ids')" prop="roleIds">
         <template slot-scope="scope">
           <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('sys_admin.table.actions')" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/admin/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/admin/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/admin/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">{{ $t('app.button.edit') }}</el-button>
+          <el-button v-permission="['POST /admin/admin/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('app.button.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,38 +40,40 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="管理员名称" prop="username">
-          <el-input v-model="dataForm.username"/>
+        <el-form-item :label="$t('sys_admin.form.username')" prop="username">
+          <el-input v-model="dataForm.username" />
         </el-form-item>
-        <el-form-item label="管理员密码" prop="password">
-          <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
+        <el-form-item :label="$t('sys_admin.form.password')" prop="password">
+          <el-input v-model="dataForm.password" type="password" auto-complete="off" />
         </el-form-item>
-        <el-form-item label="管理员头像" prop="avatar">
+        <el-form-item :label="$t('sys_admin.form.avatar')" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
             :show-file-list="false"
             :on-success="uploadAvatar"
             class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
+            accept=".jpg,.jpeg,.png,.gif"
+          >
             <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
-        <el-form-item label="管理员角色" prop="roleIds">
-          <el-select v-model="dataForm.roleIds" multiple placeholder="请选择">
+        <el-form-item :label="$t('sys_admin.form.role_ids')" prop="roleIds">
+          <el-select v-model="dataForm.roleIds" multiple :placeholder="$t('sys_admin.placeholder.role_ids')">
             <el-option
               v-for="item in roleOptions"
               :key="item.value"
               :label="item.label"
-              :value="item.value"/>
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确定</el-button>
-        <el-button v-else type="primary" @click="updateData">确定</el-button>
+        <el-button @click="dialogFormVisible = false">{{ $t('app.button.cancel') }}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('app.button.confirm') }}</el-button>
+        <el-button v-else type="primary" @click="updateData">{{ $t('app.button.confirm') }}</el-button>
       </div>
     </el-dialog>
 
@@ -275,8 +277,7 @@ export default {
             title: '成功',
             message: '删除管理员成功'
           })
-          const index = this.list.indexOf(row)
-          this.list.splice(index, 1)
+          this.getList()
         })
         .catch(response => {
           this.$notify.error({

@@ -3,10 +3,9 @@
     <van-cell-group>
 
       <van-field
-        label="新密码"
-        v-model="password"
-        type="password"
-        placeholder="请输入新密码"
+        label="手机号码"
+        v-model="mobile"
+        placeholder="请输入手机号码"
       />
 
 			<van-field
@@ -15,16 +14,31 @@
 				@click-icon="getCode"
 				placeholder="请输入验证码">
 
-				<span slot="icon"
+				<span slot="button"
 					class="verifi_code red"
 					:class="{verifi_code_counting: counting}"
 					@click="getCode">
-					<countdown v-if="counting" :time="60000" @countdownend="countdownend">
+					<countdown v-if="counting" :time="60000" @end="countdownend">
 					  <template slot-scope="props">{{ +props.seconds || 60 }}秒后获取</template>
 					</countdown>
 					<span v-else>获取验证码</span>
 				</span>
 			</van-field>
+
+      <van-field
+        label="新密码"
+        v-model="password"
+        type="password"
+        placeholder="请输入新密码"
+      />
+
+      <van-field
+        label="确认密码"
+        v-model="password2"
+        type="password"
+        placeholder="请再次输入密码"
+      />
+
     </van-cell-group>
 
     <div class="bottom_btn">
@@ -37,11 +51,12 @@
 <script>
 import { authCaptcha, authReset, authLogout } from '@/api/api';
 import { removeLocalStorage } from '@/utils/local-storage';
-import { Field } from 'vant';
+import { Field, Toast } from 'vant';
 
 export default {
   data: () => ({
     password: '',
+    password2: '',
     mobile: '',
     code: '',
     counting: false
@@ -58,6 +73,8 @@ export default {
         .then(() => {
           this.$dialog.alert({ message: '保存成功, 请重新登录.' })
           authLogout();
+        }).catch (error => {
+        Toast.fail(error.data.errmsg);
         });
       }
     },

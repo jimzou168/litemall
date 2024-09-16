@@ -24,14 +24,14 @@ import Layout from '@/views/layout/Layout'
     noCache: true                if true ,the page will no be cached(default is false)
   }
 **/
-export const constantRouterMap = [
+export const constantRoutes = [
   {
     path: '/redirect',
     component: Layout,
     hidden: true,
     children: [
       {
-        path: '/redirect/:path*',
+        path: '/redirect/:path(.*)',
         component: () => import('@/views/redirect/index')
       }
     ]
@@ -65,19 +65,13 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', noCache: true }
+        meta: { title: 'app.menu.dashboard', icon: 'dashboard', affix: true }
       }
     ]
   }
 ]
 
-export default new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
-
-export const asyncRouterMap = [
+export const asyncRoutes = [
   {
     path: '/user',
     component: Layout,
@@ -85,7 +79,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'userManage',
     meta: {
-      title: '用户管理',
+      title: 'app.menu.user',
       icon: 'chart'
     },
     children: [
@@ -95,7 +89,7 @@ export const asyncRouterMap = [
         name: 'user',
         meta: {
           perms: ['GET /admin/user/list'],
-          title: '会员管理',
+          title: 'app.menu.user_user',
           noCache: true
         }
       },
@@ -105,7 +99,7 @@ export const asyncRouterMap = [
         name: 'address',
         meta: {
           perms: ['GET /admin/address/list'],
-          title: '收货地址',
+          title: 'app.menu.user_address',
           noCache: true
         }
       },
@@ -115,7 +109,7 @@ export const asyncRouterMap = [
         name: 'collect',
         meta: {
           perms: ['GET /admin/collect/list'],
-          title: '会员收藏',
+          title: 'app.menu.user_collect',
           noCache: true
         }
       },
@@ -125,7 +119,7 @@ export const asyncRouterMap = [
         name: 'footprint',
         meta: {
           perms: ['GET /admin/footprint/list'],
-          title: '会员足迹',
+          title: 'app.menu.user_footprint',
           noCache: true
         }
       },
@@ -135,7 +129,7 @@ export const asyncRouterMap = [
         name: 'history',
         meta: {
           perms: ['GET /admin/history/list'],
-          title: '搜索历史',
+          title: 'app.menu.user_history',
           noCache: true
         }
       },
@@ -145,7 +139,7 @@ export const asyncRouterMap = [
         name: 'feedback',
         meta: {
           perms: ['GET /admin/feedback/list'],
-          title: '意见反馈',
+          title: 'app.menu.user_feedback',
           noCache: true
         }
       }
@@ -159,7 +153,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'mallManage',
     meta: {
-      title: '商场管理',
+      title: 'app.menu.mall',
       icon: 'chart'
     },
     children: [
@@ -168,7 +162,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/mall/region'),
         name: 'region',
         meta: {
-          title: '行政区域',
+          title: 'app.menu.mall_region',
           noCache: true
         }
       },
@@ -178,7 +172,7 @@ export const asyncRouterMap = [
         name: 'brand',
         meta: {
           perms: ['GET /admin/brand/list', 'POST /admin/brand/create', 'GET /admin/brand/read', 'POST /admin/brand/update', 'POST /admin/brand/delete'],
-          title: '品牌制造商',
+          title: 'app.menu.mall_brand',
           noCache: true
         }
       },
@@ -188,7 +182,7 @@ export const asyncRouterMap = [
         name: 'category',
         meta: {
           perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
-          title: '商品类目',
+          title: 'app.menu.mall_category',
           noCache: true
         }
       },
@@ -197,8 +191,18 @@ export const asyncRouterMap = [
         component: () => import('@/views/mall/order'),
         name: 'order',
         meta: {
-          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '订单管理',
+          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ship', 'POST /admin/order/refund', 'POST /admin/order/delete', 'POST /admin/order/reply'],
+          title: 'app.menu.mall_order',
+          noCache: true
+        }
+      },
+      {
+        path: 'aftersale',
+        component: () => import('@/views/mall/aftersale'),
+        name: 'aftersale',
+        meta: {
+          perms: ['GET /admin/aftersale/list', 'GET /admin/aftersale/detail', 'POST /admin/order/receive', 'POST /admin/aftersale/complete', 'POST /admin/aftersale/reject'],
+          title: 'app.menu.mall_aftersale',
           noCache: true
         }
       },
@@ -208,7 +212,7 @@ export const asyncRouterMap = [
         name: 'issue',
         meta: {
           perms: ['GET /admin/issue/list', 'POST /admin/issue/create', 'GET /admin/issue/read', 'POST /admin/issue/update', 'POST /admin/issue/delete'],
-          title: '通用问题',
+          title: 'app.menu.mall_issue',
           noCache: true
         }
       },
@@ -218,7 +222,7 @@ export const asyncRouterMap = [
         name: 'keyword',
         meta: {
           perms: ['GET /admin/keyword/list', 'POST /admin/keyword/create', 'GET /admin/keyword/read', 'POST /admin/keyword/update', 'POST /admin/keyword/delete'],
-          title: '关键词',
+          title: 'app.menu.mall_keyword',
           noCache: true
         }
       }
@@ -232,7 +236,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'goodsManage',
     meta: {
-      title: '商品管理',
+      title: 'app.menu.goods',
       icon: 'chart'
     },
     children: [
@@ -242,7 +246,7 @@ export const asyncRouterMap = [
         name: 'goodsList',
         meta: {
           perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
-          title: '商品列表',
+          title: 'app.menu.goods_list',
           noCache: true
         }
       },
@@ -252,7 +256,7 @@ export const asyncRouterMap = [
         name: 'goodsCreate',
         meta: {
           perms: ['POST /admin/goods/create'],
-          title: '商品上架',
+          title: 'app.menu.goods_create',
           noCache: true
         }
       },
@@ -262,7 +266,7 @@ export const asyncRouterMap = [
         name: 'goodsEdit',
         meta: {
           perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
-          title: '商品编辑',
+          title: 'app.menu.goods_edit',
           noCache: true
         },
         hidden: true
@@ -273,7 +277,7 @@ export const asyncRouterMap = [
         name: 'goodsComment',
         meta: {
           perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
-          title: '商品评论',
+          title: 'app.menu.goods_comment',
           noCache: true
         }
       }
@@ -286,7 +290,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'promotionManage',
     meta: {
-      title: '推广管理',
+      title: 'app.menu.promotion',
       icon: 'chart'
     },
     children: [
@@ -296,7 +300,7 @@ export const asyncRouterMap = [
         name: 'ad',
         meta: {
           perms: ['GET /admin/ad/list', 'POST /admin/ad/create', 'GET /admin/ad/read', 'POST /admin/ad/update', 'POST /admin/ad/delete'],
-          title: '广告管理',
+          title: 'app.menu.promotion_ad',
           noCache: true
         }
       },
@@ -306,7 +310,7 @@ export const asyncRouterMap = [
         name: 'coupon',
         meta: {
           perms: ['GET /admin/coupon/list', 'POST /admin/coupon/create', 'POST /admin/coupon/update', 'POST /admin/coupon/delete'],
-          title: '优惠券管理',
+          title: 'app.menu.promotion_coupon',
           noCache: true
         }
       },
@@ -316,7 +320,7 @@ export const asyncRouterMap = [
         name: 'couponDetail',
         meta: {
           perms: ['GET /admin/coupon/list', 'GET /admin/coupon/listuser'],
-          title: '优惠券详情',
+          title: 'app.menu.promotion_coupon_detail',
           noCache: true
         },
         hidden: true
@@ -327,7 +331,7 @@ export const asyncRouterMap = [
         name: 'topic',
         meta: {
           perms: ['GET /admin/topic/list', 'POST /admin/topic/create', 'GET /admin/topic/read', 'POST /admin/topic/update', 'POST /admin/topic/delete'],
-          title: '专题管理',
+          title: 'app.menu.promotion_topic',
           noCache: true
         }
       },
@@ -337,7 +341,7 @@ export const asyncRouterMap = [
         name: 'topicCreate',
         meta: {
           perms: ['POST /admin/topic/create'],
-          title: '专题创建',
+          title: 'app.menu.promotion_topic_create',
           noCache: true
         },
         hidden: true
@@ -348,7 +352,7 @@ export const asyncRouterMap = [
         name: 'topicEdit',
         meta: {
           perms: ['GET /admin/topic/read', 'POST /admin/topic/update'],
-          title: '专题编辑',
+          title: 'app.menu.promotion_topic_edit',
           noCache: true
         },
         hidden: true
@@ -359,7 +363,7 @@ export const asyncRouterMap = [
         name: 'grouponRule',
         meta: {
           perms: ['GET /admin/groupon/list', 'POST /admin/groupon/create', 'POST /admin/groupon/update', 'POST /admin/groupon/delete'],
-          title: '团购规则',
+          title: 'app.menu.promotion_groupon_rule',
           noCache: true
         }
       },
@@ -369,7 +373,7 @@ export const asyncRouterMap = [
         name: 'grouponActivity',
         meta: {
           perms: ['GET /admin/groupon/listRecord'],
-          title: '团购活动',
+          title: 'app.menu.promotion_groupon_activity',
           noCache: true
         }
       }
@@ -383,7 +387,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'sysManage',
     meta: {
-      title: '系统管理',
+      title: 'app.menu.sys',
       icon: 'chart'
     },
     children: [
@@ -393,7 +397,17 @@ export const asyncRouterMap = [
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '管理员',
+          title: 'app.menu.sys_admin',
+          noCache: true
+        }
+      },
+      {
+        path: 'notice',
+        component: () => import('@/views/sys/notice'),
+        name: 'sysNotice',
+        meta: {
+          perms: ['GET /admin/notice/list', 'POST /admin/notice/create', 'POST /admin/notice/update', 'POST /admin/notice/delete'],
+          title: 'app.menu.sys_notice',
           noCache: true
         }
       },
@@ -403,7 +417,7 @@ export const asyncRouterMap = [
         name: 'log',
         meta: {
           perms: ['GET /admin/log/list'],
-          title: '操作日志',
+          title: 'app.menu.sys_log',
           noCache: true
         }
       },
@@ -413,7 +427,7 @@ export const asyncRouterMap = [
         name: 'role',
         meta: {
           perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/update', 'POST /admin/role/delete', 'GET /admin/role/permissions', 'POST /admin/role/permissions'],
-          title: '角色管理',
+          title: 'app.menu.sys_role',
           noCache: true
         }
       },
@@ -423,7 +437,7 @@ export const asyncRouterMap = [
         name: 'os',
         meta: {
           perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
-          title: '对象存储',
+          title: 'app.menu.sys_os',
           noCache: true
         }
       }
@@ -437,7 +451,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'configManage',
     meta: {
-      title: '配置管理',
+      title: 'app.menu.config',
       icon: 'chart'
     },
     children: [
@@ -447,7 +461,7 @@ export const asyncRouterMap = [
         name: 'configMall',
         meta: {
           perms: ['GET /admin/config/mall', 'POST /admin/config/mall'],
-          title: '商场配置',
+          title: 'app.menu.config_mall',
           noCache: true
         }
       },
@@ -457,7 +471,7 @@ export const asyncRouterMap = [
         name: 'configExpress',
         meta: {
           perms: ['GET /admin/config/express', 'POST /admin/config/express'],
-          title: '运费配置',
+          title: 'app.menu.config_express',
           noCache: true
         }
       },
@@ -467,7 +481,7 @@ export const asyncRouterMap = [
         name: 'configOrder',
         meta: {
           perms: ['GET /admin/config/order', 'POST /admin/config/order'],
-          title: '订单配置',
+          title: 'app.menu.config_order',
           noCache: true
         }
       },
@@ -477,7 +491,7 @@ export const asyncRouterMap = [
         name: 'configWx',
         meta: {
           perms: ['GET /admin/config/wx', 'POST /admin/config/wx'],
-          title: '小程序配置',
+          title: 'app.menu.config_wx',
           noCache: true
         }
       }
@@ -491,7 +505,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'statManage',
     meta: {
-      title: '统计报表',
+      title: 'app.menu.stat',
       icon: 'chart'
     },
     children: [
@@ -501,7 +515,7 @@ export const asyncRouterMap = [
         name: 'statUser',
         meta: {
           perms: ['GET /admin/stat/user'],
-          title: '用户统计',
+          title: 'app.menu.stat_user',
           noCache: true
         }
       },
@@ -511,7 +525,7 @@ export const asyncRouterMap = [
         name: 'statOrder',
         meta: {
           perms: ['GET /admin/stat/order'],
-          title: '订单统计',
+          title: 'app.menu.stat_order',
           noCache: true
         }
       },
@@ -521,7 +535,7 @@ export const asyncRouterMap = [
         name: 'statGoods',
         meta: {
           perms: ['GET /admin/stat/goods'],
-          title: '商品统计',
+          title: 'app.menu.stat_goods',
           noCache: true
         }
       }
@@ -534,37 +548,37 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'externalLink',
     meta: {
-      title: '外链',
+      title: 'app.menu.external_link',
       icon: 'link'
     },
     children: [
       {
         path: 'https://cloud.tencent.com/product/cos',
-        meta: { title: '腾讯云存储', icon: 'link' }
+        meta: { title: 'app.menu.external_link_tencent_cos', icon: 'link' }
       },
       {
         path: 'https://cloud.tencent.com/product/sms',
-        meta: { title: '腾讯云短信', icon: 'link' }
+        meta: { title: 'app.menu.external_link_tencent_sms', icon: 'link' }
       },
       {
         path: 'https://pay.weixin.qq.com/index.php/core/home/login',
-        meta: { title: '微信支付', icon: 'link' }
+        meta: { title: 'app.menu.external_link_weixin_pay', icon: 'link' }
       },
       {
         path: 'https://mpkf.weixin.qq.com/',
-        meta: { title: '小程序客服', icon: 'link' }
+        meta: { title: 'app.menu.external_link_weixin_mpkf', icon: 'link' }
       },
       {
         path: 'https://www.alibabacloud.com/zh/product/oss',
-        meta: { title: '阿里云存储', icon: 'link' }
+        meta: { title: 'app.menu.external_link_alibaba_oss', icon: 'link' }
       },
       {
         path: 'https://www.qiniu.com/products/kodo',
-        meta: { title: '七牛云存储', icon: 'link' }
+        meta: { title: 'app.menu.external_link_qiniu_kodo', icon: 'link' }
       },
       {
         path: 'http://www.kdniao.com/api-track',
-        meta: { title: '快递鸟', icon: 'link' }
+        meta: { title: 'app.menu.external_link_kdniao_api', icon: 'link' }
       }
     ]
   },
@@ -578,7 +592,13 @@ export const asyncRouterMap = [
         path: 'password',
         component: () => import('@/views/profile/password'),
         name: 'password',
-        meta: { title: '修改密码', noCache: true }
+        meta: { title: 'app.menu.profile_password', noCache: true }
+      },
+      {
+        path: 'notice',
+        component: () => import('@/views/profile/notice'),
+        name: 'notice',
+        meta: { title: 'app.menu.profile_notice', noCache: true }
       }
     ],
     hidden: true
@@ -586,3 +606,19 @@ export const asyncRouterMap = [
 
   { path: '*', redirect: '/404', hidden: true }
 ]
+
+const createRouter = () => new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
+})
+
+const router = createRouter()
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+export default router

@@ -81,7 +81,8 @@ public class WxHomeController {
         if (HomeCacheManager.hasData(HomeCacheManager.INDEX)) {
             return ResponseUtil.ok(HomeCacheManager.getCacheData(HomeCacheManager.INDEX));
         }
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        //相当于每次都是new的线程池 没意义
+        //ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         Callable<List> bannerListCallable = () -> adService.queryIndex();
 
@@ -144,9 +145,10 @@ public class WxHomeController {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            executorService.shutdown();
         }
+//        finally {
+//            executorService.shutdown();
+//        }
         return ResponseUtil.ok(entity);
     }
 
@@ -174,5 +176,21 @@ public class WxHomeController {
             categoryList.add(catGoods);
         }
         return categoryList;
+    }
+
+    /**
+     * 商城介绍信息
+     * @return 商城介绍信息
+     */
+    @GetMapping("/about")
+    public Object about() {
+        Map<String, Object> about = new HashMap<>();
+        about.put("name", SystemConfig.getMallName());
+        about.put("address", SystemConfig.getMallAddress());
+        about.put("phone", SystemConfig.getMallPhone());
+        about.put("qq", SystemConfig.getMallQQ());
+        about.put("longitude", SystemConfig.getMallLongitude());
+        about.put("latitude", SystemConfig.getMallLatitude());
+        return ResponseUtil.ok(about);
     }
 }

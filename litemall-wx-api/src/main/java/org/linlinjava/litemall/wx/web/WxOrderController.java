@@ -27,9 +27,11 @@ public class WxOrderController {
      * 订单列表
      *
      * @param userId   用户ID
-     * @param showType 订单信息
+     * @param showType 显示类型，如果是0则是全部订单
      * @param page     分页页数
      * @param limit     分页大小
+     * @param sort     排序字段
+     * @param order     排序方式
      * @return 订单列表
      */
     @GetMapping("list")
@@ -91,6 +93,18 @@ public class WxOrderController {
     }
 
     /**
+     * 微信H5支付
+     * @param userId
+     * @param body
+     * @param request
+     * @return
+     */
+    @PostMapping("h5pay")
+    public Object h5pay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request) {
+        return wxOrderService.h5pay(userId, body, request);
+    }
+
+    /**
      * 微信付款成功或失败回调接口
      * <p>
      *  TODO
@@ -145,15 +159,13 @@ public class WxOrderController {
      * 待评价订单商品信息
      *
      * @param userId  用户ID
-     * @param orderId 订单ID
-     * @param goodsId 商品ID
+     * @param ogid 订单商品ID
      * @return 待评价订单商品信息
      */
     @GetMapping("goods")
     public Object goods(@LoginUser Integer userId,
-                        @NotNull Integer orderId,
-                        @NotNull Integer goodsId) {
-        return wxOrderService.goods(userId, orderId, goodsId);
+                        @NotNull Integer ogid) {
+        return wxOrderService.goods(userId, ogid);
     }
 
     /**

@@ -21,14 +21,13 @@ Page({
     cartGoodsCount: 0,
     userHasCollect: 0,
     number: 1,
+    tmpPicUrl: '',
     checkedSpecText: '规格数量选择',
     tmpSpecText: '请选择规格数量',
     checkedSpecPrice: 0,
     openAttr: false,
     openShare: false,
-    noCollectImage: '/static/images/icon_collect.png',
-    hasCollectImage: '/static/images/icon_collect_checked.png',
-    collectImage: '/static/images/icon_collect.png',
+    collect: false,
     shareImage: '',
     isGroupon: false, //标识是否是一个参团购买
     soldout: false,
@@ -87,8 +86,8 @@ Page({
           filePath: res.tempFilePath,
           success: function(res) {
             wx.showModal({
-              title: '存图成功',
-              content: '图片成功保存到相册了，可以分享到朋友圈了',
+              title: '生成海报成功',
+              content: '海报已成功保存到相册，可以分享到朋友圈了',
               showCancel: false,
               confirmText: '好的',
               confirmColor: '#a78845',
@@ -135,7 +134,9 @@ Page({
     }).then(function(res) {
       if (res.errno === 0) {
 
-        let _specificationList = res.data.specificationList
+        let _specificationList = res.data.specificationList;
+        let _tmpPicUrl = res.data.productList[0].url;
+        //console.log("pic: "+_tmpPicUrl);
         // 如果仅仅存在一种货品，那么商品页面初始化时默认checked
         if (_specificationList.length == 1) {
           if (_specificationList[0].valueList.length == 1) {
@@ -151,10 +152,11 @@ Page({
 
             that.setData({
               checkedSpecText: _specificationList[0].valueList[0].value,
-              tmpSpecText: '已选择：' + _specificationList[0].valueList[0].value,
+              tmpSpecText: '已选择：' + _specificationList[0].valueList[0].value
             });
           }
         }
+        res.data.info.path = "pages/goods/goods?id=" + that.data.id
 
         that.setData({
           goods: res.data.info,
@@ -169,8 +171,11 @@ Page({
           checkedSpecPrice: res.data.info.retailPrice,
           groupon: res.data.groupon,
           canShare: res.data.share,
+          //选择规格时，默认展示第一张图片
+          tmpPicUrl: _tmpPicUrl
         });
 
+        
         //如果是通过分享的团购参加团购，则团购项目应该与分享的一致并且不可更改
         if (that.data.isGroupon) {
           let groupons = that.data.groupon;
@@ -189,11 +194,11 @@ Page({
 
         if (res.data.userHasCollect == 1) {
           that.setData({
-            collectImage: that.data.hasCollectImage
+            collect: true
           });
         } else {
           that.setData({
-            collectImage: that.data.noCollectImage
+            collect: false
           });
         }
 
@@ -374,9 +379,11 @@ Page({
       }
 
       let checkedProduct = checkedProductArray[0];
+      //console.log("checkedProduct: "+checkedProduct.url);
       if (checkedProduct.number > 0) {
         this.setData({
           checkedSpecPrice: checkedProduct.price,
+          tmpPicUrl: checkedProduct.url,
           soldout: false
         });
       } else {
@@ -471,12 +478,12 @@ Page({
       .then(function(res) {
         if (that.data.userHasCollect == 1) {
           that.setData({
-            collectImage: that.data.noCollectImage,
+            collect: false,
             userHasCollect: 0
           });
         } else {
           that.setData({
-            collectImage: that.data.hasCollectImage,
+            collect: true,
             userHasCollect: 1
           });
         }
@@ -497,10 +504,7 @@ Page({
 
       //提示选择完整规格
       if (!this.isCheckedAllSpec()) {
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '请选择完整规格'
-        });
+        util.showErrorToast('请选择完整规格');
         return false;
       }
 
@@ -508,20 +512,14 @@ Page({
       let checkedProductArray = this.getCheckedProductItem(this.getCheckedSpecKey());
       if (!checkedProductArray || checkedProductArray.length <= 0) {
         //找不到对应的product信息，提示没有库存
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '没有库存'
-        });
+        util.showErrorToast('没有库存');
         return false;
       }
 
       let checkedProduct = checkedProductArray[0];
       //验证库存
       if (checkedProduct.number <= 0) {
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '没有库存'
-        });
+        util.showErrorToast('没有库存');
         return false;
       }
 
@@ -548,11 +546,7 @@ Page({
             } catch (e) {}
 
           } else {
-            wx.showToast({
-              image: '/static/images/icon_error.png',
-              title: res.errmsg,
-              mask: true
-            });
+            util.showErrorToast(res.errmsg);
           }
         });
     }
@@ -572,10 +566,7 @@ Page({
 
       //提示选择完整规格
       if (!this.isCheckedAllSpec()) {
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '请选择完整规格'
-        });
+        util.showErrorToast('请选择完整规格');
         return false;
       }
 
@@ -583,20 +574,14 @@ Page({
       let checkedProductArray = this.getCheckedProductItem(this.getCheckedSpecKey());
       if (!checkedProductArray || checkedProductArray.length <= 0) {
         //找不到对应的product信息，提示没有库存
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '没有库存'
-        });
+        util.showErrorToast('没有库存');
         return false;
       }
 
       let checkedProduct = checkedProductArray[0];
       //验证库存
       if (checkedProduct.number <= 0) {
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: '没有库存'
-        });
+        util.showErrorToast('没有库存');
         return false;
       }
 
@@ -618,19 +603,15 @@ Page({
             });
             if (that.data.userHasCollect == 1) {
               that.setData({
-                collectImage: that.data.hasCollectImage
+                collect: true
               });
             } else {
               that.setData({
-                collectImage: that.data.noCollectImage
+                collect: false
               });
             }
           } else {
-            wx.showToast({
-              image: '/static/images/icon_error.png',
-              title: _res.errmsg,
-              mask: true
-            });
+            util.showErrorToast(_res.errmsg);
           }
 
         });

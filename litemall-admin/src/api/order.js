@@ -6,8 +6,8 @@ export function listOrder(query) {
     url: '/order/list',
     method: 'get',
     params: query,
-    paramsSerializer: function(params) {
-      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    paramsSerializer: {
+      serialize: (params) => Qs.stringify(params, { arrayFormat: 'repeat' })
     }
   })
 }
@@ -36,10 +36,33 @@ export function refundOrder(data) {
   })
 }
 
+export function payOrder(data) {
+  return request({
+    url: '/order/pay',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteOrder(data) {
+  return request({
+    url: '/order/delete',
+    method: 'post',
+    data
+  })
+}
+
 export function replyComment(data) {
   return request({
     url: '/order/reply',
     method: 'post',
     data
+  })
+}
+
+export function listChannel(id) {
+  return request({
+    url: '/order/channel',
+    method: 'get'
   })
 }
